@@ -64,7 +64,7 @@ def export_tracking(source_img_path, source_label_path, dest_img_path, dest_labe
         l = 0
         for source_single_img_path in img_path_set:
             # copy img to destination
-            img_name = str(img_cnt).zfill(6) + source_single_img_path[-4:]
+            img_name = str(img_cnt).zfill(6) + ".jpg"
             dest_single_img_path = dest_img_path + img_name
             print("copying " + source_single_img_path + " to " + dest_single_img_path)
             padded_img = add_white_rectangle(source_single_img_path, False)
