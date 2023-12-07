@@ -97,6 +97,7 @@ def plot_results(pil_img, prob, boxes):
 from PIL import Image, ImageDraw
 
 def add_white_rectangle(img_path, online = False):
+    print("Adding white rectangle")
     IMAGE_PADDING = 250
     if (online == False):
         img = Image.open(img_path).convert("RGB")
@@ -199,6 +200,8 @@ if __name__ == "__main__":
     ])
 
     path_name = sys.argv[1]
+    if path_name[-1] != "/":
+        path_name += "/"
     model_name = sys.argv[2]
     print("Path:", path_name)
     print("Model:", model_name)
