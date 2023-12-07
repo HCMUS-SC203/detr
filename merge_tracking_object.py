@@ -130,10 +130,10 @@ def export_detection(source_img_path, dest_img_path, source_label_path, dest_lab
             continue
         # copy label to destination
         label_name = str(img_cnt).zfill(6) + ".txt"
-        dest_label_path = dest_label_path + label_name
-        print("formating labels to " + dest_label_path)
+        single_dest_label_path = dest_label_path + label_name
+        print("formating labels to " + single_dest_label_path)
         print(res_label_set)
-        f = open(dest_label_path, "w")
+        f = open(single_dest_label_path, "w")
         for label in res_label_set:
             f.write(" ".join(label) + "\n")
         f.close()
