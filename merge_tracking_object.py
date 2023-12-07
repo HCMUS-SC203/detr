@@ -99,19 +99,52 @@ def export_tracking(source_img_path, source_label_path, dest_img_path, dest_labe
 
 
 
-def export_detection(source_path, dest_path):
+# def export_detection(source_path, dest_path):
+#     img_cnt = 0
+#     img_path_set = glob.glob(source_path + "*.png") + glob.glob(source_path + "*.jpg")
+#     img_path_set.sort()
+#     for source_img_path in img_path_set:
+#         # copy file to destination
+#         img_name = str(img_cnt).zfill(6) + source_img_path[-4:]
+#         img_cnt += 1
+#         dest_img_path = dest_path + img_name
+#         print("copying " + source_img_path + " to " + dest_img_path)
+#         # shutil.copyfile(source_img_path, dest_img_path)
+#         padded_img = add_white_rectangle(source_img_path, False)
+#         padded_img.save(dest_img_path)
+
+def export_detection(source_img_path, dest_img_path, source_label_path, dest_label_path):
     img_cnt = 0
-    img_path_set = glob.glob(source_path + "*.png") + glob.glob(source_path + "*.jpg")
+    img_path_set = glob.glob(source_img_path + "*.png") + glob.glob(source_img_path + "*.jpg")
     img_path_set.sort()
     for source_img_path in img_path_set:
-        # copy file to destination
-        img_name = str(img_cnt).zfill(6) + source_img_path[-4:]
-        img_cnt += 1
-        dest_img_path = dest_path + img_name
+        img_name = source_img_path.split("/")[-1]
+        # read label
+        label_set = read_label_file(source_label_path + img_name[:-4] + ".txt")
+        res_label_set = []
+        for label in label_set:
+            if label[0] == "Pedestrian":
+                label[0] = "person"
+                res_label_set.append(label)
+        if len(res_label_set) == 0:
+            continue
+        # copy label to destination
+        label_name = str(img_cnt).zfill(6) + ".txt"
+        dest_label_path = dest_label_path + label_name
+        print("formating labels to " + dest_label_path)
+        print(res_label_set)
+        f = open(dest_label_path, "w")
+        for label in res_label_set:
+            f.write(" ".join(label) + "\n")
+        f.close()
+        # copy img to destination
+        img_name = str(img_cnt).zfill(6) + ".jpg"
+        dest_img_path = dest_img_path + img_name
         print("copying " + source_img_path + " to " + dest_img_path)
         # shutil.copyfile(source_img_path, dest_img_path)
         padded_img = add_white_rectangle(source_img_path, False)
         padded_img.save(dest_img_path)
+        img_cnt += 1
 
 # def export(source_path, dest_path, type):
 #     if type == "Tracking":
@@ -125,7 +158,7 @@ def export(source_img_path, source_label_path, dest_img_path, dest_label_path, t
     if type == "Tracking":
         export_tracking(source_img_path, source_label_path, dest_img_path, dest_label_path)
     elif type == "Detection":
-        export_detection(source_img_path, source_label_path)
+        export_detection(source_img_path, dest_img_path, source_label_path, dest_label_path)
     else:
         print("Wrong type")
 
