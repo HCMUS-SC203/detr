@@ -29,25 +29,75 @@ def add_white_rectangle(img_path, online = False):
     # Return the new image
     return new_img
 
-def export_tracking(source_path, dest_path):
+def read_label_file(label_path):
+    f = open(label_path, "r")
+    lines = f.readlines()
+    f.close()
+    label_set = []
+    for line in lines:
+        line = line.strip()
+        line = line.split(" ")
+        label_set.append(line)
+    return label_set
+
+def contain_pedestrian(label_set):
+    for label in label_set:
+        if label[0] == "Pedestrian" or label[2] == "Pedestrian":
+            return True
+    return False
+
+
+def export_tracking(source_img_path, source_label_path, dest_img_path, dest_label_path):
+    OFFSET = 100000
     chosen_folder = [13, 16, 17, 19]
-    img_cnt = 100000
+    img_cnt = OFFSET
     for folder in chosen_folder:
         folder_name = str(str(folder)).zfill(4)
-        folder_path = source_path + folder_name + "/"
+        folder_path = source_img_path + folder_name + "/"
         print("extracting folder " + folder_name)
         print("folder path: " + folder_path)
         img_path_set = glob.glob(folder_path + "*.png") + glob.glob(folder_path + "*.jpg")
         img_path_set.sort()
-        for source_img_path in img_path_set:
-            # copy file to destination
-            img_name = str(img_cnt).zfill(6) + source_img_path[-4:]
+        label_set = read_label_file(source_label_path + folder_name + ".txt")
+        # print("label set:")
+        # print(label_set, end="\n")
+        l = 0
+        for source_single_img_path in img_path_set:
+            # copy img to destination
+            img_name = str(img_cnt).zfill(6) + source_single_img_path[-4:]
+            dest_single_img_path = dest_img_path + img_name
+            print("copying " + source_single_img_path + " to " + dest_single_img_path)
+            padded_img = add_white_rectangle(source_single_img_path, False)
+            padded_img.save(dest_single_img_path)
+            # copy label to destination
+            while (l < len(label_set) and label_set[l][0] != str(img_cnt - OFFSET)):
+                l += 1
+            r = l
+            while (r < len(label_set) and label_set[r][0] == str(img_cnt - OFFSET)): # same frame
+                r += 1
+            print(source_single_img_path, img_cnt, l, r)
+            single_label_set = label_set[l:r]
+            res_label_set = []
+            for label in single_label_set:
+                if (label[2] == "Pedestrian"):
+                    # delete label[0], label[1] and change label[2] to 'person'
+                    label.pop(0)
+                    label.pop(0)
+                    label[0] = "person"
+                    res_label_set.append(label)
+            l = r
+            label_name = str(img_cnt).zfill(6) + ".txt"
+            dest_single_label_path = dest_label_path + label_name
+            print("formating labels to " + dest_single_label_path)
+            print(res_label_set)
+            f = open(dest_single_label_path, "w")
+            for label in res_label_set:
+                f.write(" ".join(label) + "\n")
+            f.close()
             img_cnt += 1
-            dest_img_path = dest_path + img_name
-            print("copying " + source_img_path + " to " + dest_img_path)
-            # shutil.copyfile(source_img_path, dest_img_path)
-            padded_img = add_white_rectangle(source_img_path, False)
-            padded_img.save(dest_img_path)
+            
+
+
 
 def export_detection(source_path, dest_path):
     img_cnt = 0
@@ -63,29 +113,46 @@ def export_detection(source_path, dest_path):
         padded_img = add_white_rectangle(source_img_path, False)
         padded_img.save(dest_img_path)
 
-def export(source_path, dest_path, type):
+# def export(source_path, dest_path, type):
+#     if type == "Tracking":
+#         export_tracking(source_path, dest_path)
+#     elif type == "Detection":
+#         export_detection(source_path, dest_path)
+#     else:
+#         print("Wrong type")
+
+def export(source_img_path, source_label_path, dest_img_path, dest_label_path, type):
     if type == "Tracking":
-        export_tracking(source_path, dest_path)
+        export_tracking(source_img_path, source_label_path, dest_img_path, dest_label_path)
     elif type == "Detection":
-        export_detection(source_path, dest_path)
+        export_detection(source_img_path, source_label_path)
     else:
         print("Wrong type")
 
 for arg in sys.argv:
     print(arg, len(arg))
 
-if len(sys.argv) != 4:
-    print("Usage: python merge_tracking_object.py <source_path> <dest_path> <type>")
+if len(sys.argv) != 6:
+    print("Usage: python merge_tracking_object.py source_img_path source_label_path dest_img_path dest_label_path type")
     sys.exit(1)
 
-source_path = sys.argv[1]
-dest_path = sys.argv[2]
-type = sys.argv[3]
+source_img_path = sys.argv[1]
+source_label_path = sys.argv[2]
+dest_img_path = sys.argv[3]
+dest_label_path = sys.argv[4]
 
-if source_path[-1] != "/":
-    source_path += "/"
+type = sys.argv[5]
 
-if dest_path[-1] != "/":
-    dest_path += "/"
+if source_img_path[-1] != "/":
+    source_img_path += "/"
+if source_label_path[-1] != "/":
+    source_label_path += "/"
+if dest_img_path[-1] != "/":
+    dest_img_path += "/"
+if dest_label_path[-1] != "/":
+    dest_label_path += "/"
+    
 
-export(source_path, dest_path, type)
+export(source_img_path, source_label_path, dest_img_path, dest_label_path, type)
+
+# py merge_tracking_object.py "D:/kitti_tracking_pedestrian/training/images" "D:/kitti_tracking_pedestrian/training/labels" "C:/APCS/Scientific Method/Midterm Presentation/Merged_KITTI/images" "C:/APCS/Scientific Method/Midterm Presentation/Merged_KITTI/labels" "Tracking"
