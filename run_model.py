@@ -97,7 +97,7 @@ def plot_results(pil_img, prob, boxes):
 from PIL import Image, ImageDraw
 
 def add_white_rectangle(img_path, online = False):
-    IMAGE_PADDING = 500
+    IMAGE_PADDING = 250
     if (online == False):
         img = Image.open(img_path).convert("RGB")
     else:
