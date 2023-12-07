@@ -60,6 +60,8 @@ def export_detection(source_path, dest_path):
         dest_img_path = dest_path + img_name
         print("copying " + source_img_path + " to " + dest_img_path)
         # shutil.copyfile(source_img_path, dest_img_path)
+        padded_img = add_white_rectangle(source_img_path, False)
+        padded_img.save(dest_img_path)
 
 def export(source_path, dest_path, type):
     if type == "Tracking":
