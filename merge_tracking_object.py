@@ -34,7 +34,7 @@ def export_tracking(source_path, dest_path):
     img_cnt = 100000
     for folder in chosen_folder:
         folder_name = str(str(folder)).zfill(4)
-        folder_path = source_path + folder_name + "\\"
+        folder_path = source_path + folder_name + "/"
         print("extracting folder " + folder_name)
         print("folder path: " + folder_path)
         img_path_set = glob.glob(folder_path + "*.png") + glob.glob(folder_path + "*.jpg")
@@ -80,10 +80,10 @@ source_path = sys.argv[1]
 dest_path = sys.argv[2]
 type = sys.argv[3]
 
-if source_path[-1] != "\\":
-    source_path += "\\"
+if source_path[-1] != "/":
+    source_path += "/"
 
-if dest_path[-1] != "\\":
-    dest_path += "\\"
+if dest_path[-1] != "/":
+    dest_path += "/"
 
 export(source_path, dest_path, type)
