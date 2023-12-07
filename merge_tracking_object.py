@@ -8,7 +8,7 @@ import requests
 import matplotlib.pyplot as plt
 
 def add_white_rectangle(img_path, online = False):
-    IMAGE_PADDING = 218
+    IMAGE_PADDING = 234
     if (online == False):
         img = Image.open(img_path).convert("RGB")
     else:
