@@ -98,7 +98,7 @@ from PIL import Image, ImageDraw
 
 def add_white_rectangle(img_path, online = False):
     print("Adding white rectangle")
-    IMAGE_PADDING = 242
+    IMAGE_PADDING = 250
     if (online == False):
         img = Image.open(img_path).convert("RGB")
     else:
