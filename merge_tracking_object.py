@@ -139,11 +139,11 @@ def export_detection(source_img_path, dest_img_path, source_label_path, dest_lab
         f.close()
         # copy img to destination
         img_name = str(img_cnt).zfill(6) + ".jpg"
-        dest_img_path = dest_img_path + img_name
-        print("copying " + source_img_path + " to " + dest_img_path)
+        single_dest_img_path = dest_img_path + img_name
+        print("copying " + source_img_path + " to " + single_dest_img_path)
         # shutil.copyfile(source_img_path, dest_img_path)
         padded_img = add_white_rectangle(source_img_path, False)
-        padded_img.save(dest_img_path)
+        padded_img.save(single_dest_img_path)
         img_cnt += 1
 
 # def export(source_path, dest_path, type):
