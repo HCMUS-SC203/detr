@@ -141,7 +141,7 @@ def write_img_list(res_file_path, file_path_set, n, k):
 def export_detection(source_img_path, source_label_path, dest_root_path):
     img_cnt = {"train": 0, "val": 0}
     img_path_set = glob.glob(source_img_path + "*.png") + glob.glob(source_img_path + "*.jpg")
-    train_img_list = read_img_list("train_img_list.txt")
+    train_img_list = read_img_list("img_list.txt")
     
     for source_img_path in img_path_set:
         img_name = source_img_path.split("/")[-1]
