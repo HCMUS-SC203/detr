@@ -196,7 +196,7 @@ def export(source_img_path, source_label_path, dest_img_path, dest_label_path, t
 for arg in sys.argv:
     print(arg, len(arg))
 
-if len(sys.argv) != 6:
+if len(sys.argv) != 5:
     print("Usage: python merge_tracking_object.py source_img_path source_label_path dest_img_path dest_label_path type")
     sys.exit(1)
 
