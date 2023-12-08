@@ -57,55 +57,55 @@ def contain_pedestrian(label_set):
     return False
 
 
-def export_tracking(source_img_path, source_label_path, dest_img_path, dest_label_path):
+def export_tracking(source_img_path, source_label_path, dest_root_path):
     OFFSET = 100000
-    # chosen_folder = [13, 16, 17, 19]
-    chosen_folder = [13, 16, 17]
-    img_cnt = OFFSET
-    for folder in chosen_folder:
-        folder_name = str(str(folder)).zfill(4)
-        folder_path = source_img_path + folder_name + "/"
-        print("extracting folder " + folder_name)
-        print("folder path: " + folder_path)
-        img_path_set = glob.glob(folder_path + "*.png") + glob.glob(folder_path + "*.jpg")
-        img_path_set.sort()
-        label_set = read_label_file(source_label_path + folder_name + ".txt")
-        # print("label set:")
-        # print(label_set, end="\n")
-        l = 0
-        for source_single_img_path in img_path_set:
-            # copy img to destination
-            img_name = str(img_cnt).zfill(6) + ".jpg"
-            dest_single_img_path = dest_img_path + img_name
-            print("copying " + source_single_img_path + " to " + dest_single_img_path)
-            padded_img = add_white_rectangle(source_single_img_path, False)
-            padded_img.save(dest_single_img_path)
-            # copy label to destination
-            while (l < len(label_set) and label_set[l][0] != str(img_cnt - OFFSET)):
-                l += 1
-            r = l
-            while (r < len(label_set) and label_set[r][0] == str(img_cnt - OFFSET)): # same frame
-                r += 1
-            print(source_single_img_path, img_cnt, l, r)
-            single_label_set = label_set[l:r]
-            res_label_set = []
-            for label in single_label_set:
-                if (label[2] == "Pedestrian"):
-                    # delete label[0], label[1] and change label[2] to 'person'
-                    label.pop(0)
-                    label.pop(0)
-                    label[0] = "person"
-                    res_label_set.append(label)
-            l = r
-            label_name = str(img_cnt).zfill(6) + ".txt"
-            dest_single_label_path = dest_label_path + label_name
-            print("formating labels to " + dest_single_label_path)
-            print(res_label_set)
-            f = open(dest_single_label_path, "w")
-            for label in res_label_set:
-                f.write(" ".join(label) + "\n")
-            f.close()
-            img_cnt += 1
+    chosen_folder = {"train": {13, 16, 17}, "val": {19}}
+    img_cnt = {"train": OFFSET, "val": OFFSET}
+    for task in ["train", "val"]:
+        for folder in chosen_folder:
+            folder_name = str(str(folder)).zfill(4)
+            folder_path = source_img_path + folder_name + "/"
+            print("extracting folder " + folder_name)
+            print("folder path: " + folder_path)
+            img_path_set = glob.glob(folder_path + "*.png") + glob.glob(folder_path + "*.jpg")
+            img_path_set.sort()
+            label_set = read_label_file(source_label_path + folder_name + ".txt")
+            # print("label set:")
+            # print(label_set, end="\n")
+            l = 0
+            for source_single_img_path in img_path_set:
+                # copy img to destination
+                img_name = str(img_cnt).zfill(6) + ".jpg"
+                dest_single_img_path = dest_root_path + task + "/images/" + img_name
+                print("copying " + source_single_img_path + " to " + dest_single_img_path)
+                padded_img = add_white_rectangle(source_single_img_path, False)
+                padded_img.save(dest_single_img_path)
+                # copy label to destination
+                while (l < len(label_set) and label_set[l][0] != str(img_cnt - OFFSET)):
+                    l += 1
+                r = l
+                while (r < len(label_set) and label_set[r][0] == str(img_cnt - OFFSET)): # same frame
+                    r += 1
+                print(source_single_img_path, img_cnt, l, r)
+                single_label_set = label_set[l:r]
+                res_label_set = []
+                for label in single_label_set:
+                    if (label[2] == "Pedestrian"):
+                        # delete label[0], label[1] and change label[2] to 'person'
+                        label.pop(0)
+                        label.pop(0)
+                        label[0] = "person"
+                        res_label_set.append(label)
+                l = r
+                label_name = str(img_cnt).zfill(6) + ".txt"
+                dest_single_label_path = dest_root_path + task + "/labels/" + label_name
+                print("formating labels to " + dest_single_label_path)
+                print(res_label_set)
+                f = open(dest_single_label_path, "w")
+                for label in res_label_set:
+                    f.write(" ".join(label) + "\n")
+                f.close()
+                img_cnt += 1
             
 
 
@@ -229,5 +229,6 @@ if (type == "Detection"):
     num_val_img = len(img_path_set) - num_train_img
     write_img_list("img_list.txt", img_path_set, len(img_path_set), num_train_img)
     export_detection(source_img_path, source_label_path, dest_root_path)
-
+elif:
+    export_tracking(source_img_path, source_label_path, dest_root_path)
 # py merge_tracking_object.py "D:/kitti_tracking_pedestrian/training/images" "D:/kitti_tracking_pedestrian/training/labels" "C:/APCS/Scientific Method/Midterm Presentation/Merged_KITTI/images" "C:/APCS/Scientific Method/Midterm Presentation/Merged_KITTI/labels" "Tracking"
