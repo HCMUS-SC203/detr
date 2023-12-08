@@ -136,7 +136,7 @@ def write_img_list(res_file_path, file_path_set, n, k):
     # from 0 to n, choose k numbers
     res_set = getRandomSet(n, k)
     f = open(res_file_path, "w")
-    for i in res_set:
+    for i in sorted(res_set):
         f.write(file_path_set[i] + "\n")
     f.close()
 
@@ -224,9 +224,9 @@ if dest_root_path[-1] != "/":
 
 if (type == "Detection"):
     img_path_set = glob.glob(source_img_path + "*.png") + glob.glob(source_img_path + "*.jpg")
-    num_train_img = 1000
+    num_train_img = 2000
     num_val_img = len(img_path_set) - num_train_img
-    write_img_list("img_list.txt", img_path_set, len(img_path_set), num_val_img)
+    write_img_list("img_list.txt", img_path_set, len(img_path_set), num_train_img)
     export_detection(source_img_path, source_label_path, dest_root_path)
 
 # py merge_tracking_object.py "D:/kitti_tracking_pedestrian/training/images" "D:/kitti_tracking_pedestrian/training/labels" "C:/APCS/Scientific Method/Midterm Presentation/Merged_KITTI/images" "C:/APCS/Scientific Method/Midterm Presentation/Merged_KITTI/labels" "Tracking"
