@@ -123,24 +123,45 @@ def export_tracking(source_img_path, source_label_path, dest_img_path, dest_labe
 #         padded_img = add_white_rectangle(source_img_path, False)
 #         padded_img.save(dest_img_path)
 
-def export_detection(source_img_path, dest_img_path, source_label_path, dest_label_path):
-    img_cnt = 0
+def read_img_list(file_path):
+    f = open(file_path, "r")
+    img_list = f.readlines()
+    f.close()
+    return img_list
+
+def write_img_list(res_file_path, file_path_set, n, k):
+    # from 0 to n, choose k numbers
+    res_set = getRandomSet(n, k)
+    f = open(res_file_path, "w")
+    for i in res_set:
+        f.write(file_path_set[i])
+    f.close()
+
+def export_detection(source_img_path, source_label_path, dest_root_path):
+    img_cnt["train", "val"] = [0, 0]
     img_path_set = glob.glob(source_img_path + "*.png") + glob.glob(source_img_path + "*.jpg")
-    img_path_set.sort()
+    train_img_list = read_img_list("train_img_list.txt")
+    
     for source_img_path in img_path_set:
         img_name = source_img_path.split("/")[-1]
+        task = "train" if train_img_list.__contains__(source_img_path) else "val"
+        dest_root_task_path = dest_root_path + task + "/"
+
         # read label
         label_set = read_label_file(source_label_path + img_name[:-4] + ".txt")
         res_label_set = []
+        cyclist_cnt = 0
         for label in label_set:
             if label[0] == "Pedestrian":
                 label[0] = "person"
                 res_label_set.append(label)
-        if len(res_label_set) == 0:
+            elif label[0] == "Cyclist":
+                cyclist_cnt += 1
+        if len(res_label_set) == 0 and cyclist_cnt == 0:
             continue
         # copy label to destination
-        label_name = str(img_cnt).zfill(6) + ".txt"
-        single_dest_label_path = dest_label_path + label_name
+        label_name = str(img_cnt[task]).zfill(6) + ".txt"
+        single_dest_label_path = dest_root_task_path + "labels/" + label_name
         print("formating labels to " + single_dest_label_path)
         print(res_label_set)
         f = open(single_dest_label_path, "w")
@@ -148,8 +169,8 @@ def export_detection(source_img_path, dest_img_path, source_label_path, dest_lab
             f.write(" ".join(label) + "\n")
         f.close()
         # copy img to destination
-        img_name = str(img_cnt).zfill(6) + ".jpg"
-        single_dest_img_path = dest_img_path + img_name
+        img_name = str(img_cnt[task]).zfill(6) + ".jpg"
+        single_dest_img_path = dest_root_task_path + "images/" + img_name
         print("copying " + source_img_path + " to " + single_dest_img_path)
         # shutil.copyfile(source_img_path, dest_img_path)
         padded_img = add_white_rectangle(source_img_path, False)
@@ -181,21 +202,22 @@ if len(sys.argv) != 6:
 
 source_img_path = sys.argv[1]
 source_label_path = sys.argv[2]
-dest_img_path = sys.argv[3]
-dest_label_path = sys.argv[4]
+dest_root_path = sys.argv[3]
 
-type = sys.argv[5]
+type = sys.argv[4]
 
 if source_img_path[-1] != "/":
     source_img_path += "/"
 if source_label_path[-1] != "/":
     source_label_path += "/"
-if dest_img_path[-1] != "/":
-    dest_img_path += "/"
-if dest_label_path[-1] != "/":
-    dest_label_path += "/"
-    
+if dest_root_path[-1] != "/":
+    dest_root_path += "/"
 
-export(source_img_path, source_label_path, dest_img_path, dest_label_path, type)
+if (type == "Detection"):
+    img_path_set = glob.glob(source_img_path + "*.png") + glob.glob(source_img_path + "*.jpg")
+    num_train_img = 1000
+    num_val_img = len(img_path_set) - num_train_img
+    write_img_list("img_list.txt", img_path_set, len(img_path_set), num_val_img)
+    export_detection(source_img_path, source_label_path, dest_root_path)
 
 # py merge_tracking_object.py "D:/kitti_tracking_pedestrian/training/images" "D:/kitti_tracking_pedestrian/training/labels" "C:/APCS/Scientific Method/Midterm Presentation/Merged_KITTI/images" "C:/APCS/Scientific Method/Midterm Presentation/Merged_KITTI/labels" "Tracking"
