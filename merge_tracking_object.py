@@ -135,7 +135,7 @@ def write_img_list(res_file_path, file_path_set, n, k):
     res_set = getRandomSet(n, k)
     f = open(res_file_path, "w")
     for i in res_set:
-        f.write(file_path_set[i])
+        f.write(file_path_set[i] + "\n")
     f.close()
 
 def export_detection(source_img_path, source_label_path, dest_root_path):
@@ -176,7 +176,7 @@ def export_detection(source_img_path, source_label_path, dest_root_path):
         # shutil.copyfile(source_img_path, dest_img_path)
         padded_img = add_white_rectangle(source_img_path, False)
         padded_img.save(single_dest_img_path)
-        img_cnt += 1
+        img_cnt[task] = img_cnt[task] + 1
 
 # def export(source_path, dest_path, type):
 #     if type == "Tracking":
