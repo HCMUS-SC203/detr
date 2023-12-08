@@ -75,7 +75,7 @@ def export_tracking(source_img_path, source_label_path, dest_root_path):
             l = 0
             for source_single_img_path in img_path_set:
                 # copy img to destination
-                img_name = str(img_cnt).zfill(6) + ".jpg"
+                img_name = str(img_cnt[task]).zfill(6) + ".jpg"
                 dest_single_img_path = dest_root_path + task + "/images/" + img_name
                 print("copying " + source_single_img_path + " to " + dest_single_img_path)
                 padded_img = add_white_rectangle(source_single_img_path, False)
@@ -86,7 +86,7 @@ def export_tracking(source_img_path, source_label_path, dest_root_path):
                 r = l
                 while (r < len(label_set) and label_set[r][0] == str(img_cnt[task] - OFFSET)): # same frame
                     r += 1
-                print(source_single_img_path, img_cnt, l, r)
+                print(source_single_img_path, img_cnt[task], l, r)
                 single_label_set = label_set[l:r]
                 res_label_set = []
                 for label in single_label_set:
@@ -97,7 +97,7 @@ def export_tracking(source_img_path, source_label_path, dest_root_path):
                         label[0] = "person"
                         res_label_set.append(label)
                 l = r
-                label_name = str(img_cnt).zfill(6) + ".txt"
+                label_name = str(img_cnt[task]).zfill(6) + ".txt"
                 dest_single_label_path = dest_root_path + task + "/labels/" + label_name
                 print("formating labels to " + dest_single_label_path)
                 print(res_label_set)
