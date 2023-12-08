@@ -136,7 +136,11 @@ def write_img_list(res_file_path, file_path_set, n, k):
     # from 0 to n, choose k numbers
     res_set = getRandomSet(n, k)
     f = open(res_file_path, "w")
-    for i in sorted(res_set):
+    sorted_res_set = []
+    for i in res_set:
+        sorted_res_set.append(i)
+    sorted_res_set.sort()
+    for i in sorted_res_set:
         f.write(file_path_set[i] + "\n")
     f.close()
 
