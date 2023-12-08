@@ -62,7 +62,7 @@ def export_tracking(source_img_path, source_label_path, dest_root_path):
     chosen_folder = {"train": {13, 16, 17}, "val": {19}}
     img_cnt = {"train": OFFSET, "val": OFFSET}
     for task in ["train", "val"]:
-        for folder in chosen_folder:
+        for folder in chosen_folder[task]:
             folder_name = str(str(folder)).zfill(4)
             folder_path = source_img_path + folder_name + "/"
             print("extracting folder " + folder_name)
