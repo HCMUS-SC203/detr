@@ -4,8 +4,17 @@ import shutil
 from PIL import Image, ImageDraw
 import sys
 import requests
+import random
 
 import matplotlib.pyplot as plt
+
+def getRandomSet(n, k):
+    # from 0 to n, choose k numbers
+    res = set()
+    while (len(res) < k):
+        res.add(random.randint(0, n - 1))
+
+
 
 def add_white_rectangle(img_path, online = False):
     IMAGE_PADDING = 250
@@ -49,7 +58,8 @@ def contain_pedestrian(label_set):
 
 def export_tracking(source_img_path, source_label_path, dest_img_path, dest_label_path):
     OFFSET = 100000
-    chosen_folder = [13, 16, 17, 19]
+    # chosen_folder = [13, 16, 17, 19]
+    chosen_folder = [13, 16, 17]
     img_cnt = OFFSET
     for folder in chosen_folder:
         folder_name = str(str(folder)).zfill(4)
