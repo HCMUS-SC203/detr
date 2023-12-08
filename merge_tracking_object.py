@@ -81,10 +81,10 @@ def export_tracking(source_img_path, source_label_path, dest_root_path):
                 padded_img = add_white_rectangle(source_single_img_path, False)
                 padded_img.save(dest_single_img_path)
                 # copy label to destination
-                while (l < len(label_set) and label_set[l][0] != str(img_cnt - OFFSET)):
+                while (l < len(label_set) and label_set[l][0] != str(img_cnt[task] - OFFSET)):
                     l += 1
                 r = l
-                while (r < len(label_set) and label_set[r][0] == str(img_cnt - OFFSET)): # same frame
+                while (r < len(label_set) and label_set[r][0] == str(img_cnt[task] - OFFSET)): # same frame
                     r += 1
                 print(source_single_img_path, img_cnt, l, r)
                 single_label_set = label_set[l:r]
