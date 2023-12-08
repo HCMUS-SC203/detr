@@ -13,6 +13,7 @@ def getRandomSet(n, k):
     res = set()
     while (len(res) < k):
         res.add(random.randint(0, n - 1))
+    res.sort()
     return res
 
 
