@@ -142,45 +142,47 @@ def export_detection(source_img_path, source_label_path, dest_root_path):
     img_cnt = {"train": 0, "val": 0}
     img_path_set = glob.glob(source_img_path + "*.png") + glob.glob(source_img_path + "*.jpg")
     train_img_list = read_img_list("img_list.txt")
+    print("train img list: ")
+    print(train_img_list)
     
-    for source_img_path in img_path_set:
-        img_name = source_img_path.split("/")[-1]
-        task = ""
-        if source_img_path in train_img_list:
-            task = "train"
-        else:
-            task = "val"
-        dest_root_task_path = dest_root_path + task + "/"
+    # for source_img_path in img_path_set:
+    #     img_name = source_img_path.split("/")[-1]
+    #     task = ""
+    #     if source_img_path in train_img_list:
+    #         task = "train"
+    #     else:
+    #         task = "val"
+    #     dest_root_task_path = dest_root_path + task + "/"
 
-        # read label
-        label_set = read_label_file(source_label_path + img_name[:-4] + ".txt")
-        res_label_set = []
-        cyclist_cnt = 0
-        for label in label_set:
-            if label[0] == "Pedestrian":
-                label[0] = "person"
-                res_label_set.append(label)
-            elif label[0] == "Cyclist":
-                cyclist_cnt += 1
-        if len(res_label_set) == 0 and cyclist_cnt == 0:
-            continue
-        # copy label to destination
-        label_name = str(img_cnt[task]).zfill(6) + ".txt"
-        single_dest_label_path = dest_root_task_path + "labels/" + label_name
-        print("formating labels to " + single_dest_label_path)
-        print(res_label_set)
-        f = open(single_dest_label_path, "w")
-        for label in res_label_set:
-            f.write(" ".join(label) + "\n")
-        f.close()
-        # copy img to destination
-        img_name = str(img_cnt[task]).zfill(6) + ".jpg"
-        single_dest_img_path = dest_root_task_path + "images/" + img_name
-        print("copying " + source_img_path + " to " + single_dest_img_path)
-        # shutil.copyfile(source_img_path, dest_img_path)
-        padded_img = add_white_rectangle(source_img_path, False)
-        padded_img.save(single_dest_img_path)
-        img_cnt[task] = img_cnt[task] + 1
+    #     # read label
+    #     label_set = read_label_file(source_label_path + img_name[:-4] + ".txt")
+    #     res_label_set = []
+    #     cyclist_cnt = 0
+    #     for label in label_set:
+    #         if label[0] == "Pedestrian":
+    #             label[0] = "person"
+    #             res_label_set.append(label)
+    #         elif label[0] == "Cyclist":
+    #             cyclist_cnt += 1
+    #     if len(res_label_set) == 0 and cyclist_cnt == 0:
+    #         continue
+    #     # copy label to destination
+    #     label_name = str(img_cnt[task]).zfill(6) + ".txt"
+    #     single_dest_label_path = dest_root_task_path + "labels/" + label_name
+    #     print("formating labels to " + single_dest_label_path)
+    #     print(res_label_set)
+    #     f = open(single_dest_label_path, "w")
+    #     for label in res_label_set:
+    #         f.write(" ".join(label) + "\n")
+    #     f.close()
+    #     # copy img to destination
+    #     img_name = str(img_cnt[task]).zfill(6) + ".jpg"
+    #     single_dest_img_path = dest_root_task_path + "images/" + img_name
+    #     print("copying " + source_img_path + " to " + single_dest_img_path)
+    #     # shutil.copyfile(source_img_path, dest_img_path)
+    #     padded_img = add_white_rectangle(source_img_path, False)
+    #     padded_img.save(single_dest_img_path)
+    #     img_cnt[task] = img_cnt[task] + 1
 
 # def export(source_path, dest_path, type):
 #     if type == "Tracking":
