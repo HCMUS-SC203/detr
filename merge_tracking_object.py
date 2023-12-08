@@ -105,7 +105,7 @@ def export_tracking(source_img_path, source_label_path, dest_root_path):
                 for label in res_label_set:
                     f.write(" ".join(label) + "\n")
                 f.close()
-                img_cnt += 1
+                img_cnt[task] = img_cnt[task] + 1
             
 
 
