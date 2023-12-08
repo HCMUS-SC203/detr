@@ -229,6 +229,8 @@ if (type == "Detection"):
     num_val_img = len(img_path_set) - num_train_img
     write_img_list("img_list.txt", img_path_set, len(img_path_set), num_train_img)
     export_detection(source_img_path, source_label_path, dest_root_path)
-elif:
+elif (type == "Tracking"):
     export_tracking(source_img_path, source_label_path, dest_root_path)
+else:
+    print("Wrong type")
 # py merge_tracking_object.py "D:/kitti_tracking_pedestrian/training/images" "D:/kitti_tracking_pedestrian/training/labels" "C:/APCS/Scientific Method/Midterm Presentation/Merged_KITTI/images" "C:/APCS/Scientific Method/Midterm Presentation/Merged_KITTI/labels" "Tracking"
