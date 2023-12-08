@@ -145,7 +145,11 @@ def export_detection(source_img_path, source_label_path, dest_root_path):
     
     for source_img_path in img_path_set:
         img_name = source_img_path.split("/")[-1]
-        task = "train" if train_img_list.__contains__(source_img_path) else "val"
+        task = ""
+        if source_img_path in train_img_list:
+            task = "train"
+        else:
+            task = "val"
         dest_root_task_path = dest_root_path + task + "/"
 
         # read label
