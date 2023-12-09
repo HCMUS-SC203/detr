@@ -63,6 +63,7 @@ def export_tracking(source_img_path, source_label_path, dest_root_path):
     img_cnt = {"train": OFFSET, "val": OFFSET}
     for task in ["train", "val"]:
         for folder in chosen_folder[task]:
+            cur_cnt = {"train": 0, "val": 0}
             folder_name = str(str(folder)).zfill(4)
             folder_path = source_img_path + folder_name + "/"
             print("extracting folder " + folder_name)
@@ -70,8 +71,6 @@ def export_tracking(source_img_path, source_label_path, dest_root_path):
             img_path_set = glob.glob(folder_path + "*.png") + glob.glob(folder_path + "*.jpg")
             img_path_set.sort()
             label_set = read_label_file(source_label_path + folder_name + ".txt")
-            # print("label set:")
-            # print(label_set, end="\n")
             l = 0
             for source_single_img_path in img_path_set:
                 # copy img to destination
@@ -81,10 +80,12 @@ def export_tracking(source_img_path, source_label_path, dest_root_path):
                 padded_img = add_white_rectangle(source_single_img_path, False)
                 padded_img.save(dest_single_img_path)
                 # copy label to destination
-                while (l < len(label_set) and label_set[l][0] != str(img_cnt[task] - OFFSET)):
+                while (l < len(label_set) and label_set[l][0] != str(cur_cnt[task])):
+                    print("Skipped ", end = "")
+                    print(label_set[l])
                     l += 1
                 r = l
-                while (r < len(label_set) and label_set[r][0] == str(img_cnt[task] - OFFSET)): # same frame
+                while (r < len(label_set) and label_set[r][0] == str(cur_cnt[task])): # same frame
                     r += 1
                 print(source_single_img_path, img_cnt[task], l, r)
                 single_label_set = label_set[l:r]
@@ -106,6 +107,7 @@ def export_tracking(source_img_path, source_label_path, dest_root_path):
                     f.write(" ".join(label) + "\n")
                 f.close()
                 img_cnt[task] = img_cnt[task] + 1
+                cur_cnt[task] = cur_cnt[task] + 1
             
 
 
