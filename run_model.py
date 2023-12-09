@@ -34,7 +34,8 @@ def detr_custom(pretrained=False, num_classes=91, return_postprocessor=False):
     model = _make_detr("resnet50", dilation=False, num_classes=num_classes)
     if pretrained:
         checkpoint = torch.hub.load_state_dict_from_url(
-            url="https://huggingface.co/nhphucqt/detr_person/resolve/main/checkpoint_003.pth?download=true", map_location="cpu", check_hash=True
+            url="https://huggingface.co/ldn694/custom_detr_pedestrian/blob/main/checkpoint_007.pth", map_location="cpu", check_hash=True
+            # url="https://huggingface.co/nhphucqt/detr_person/resolve/main/checkpoint_003.pth?download=true", map_location="cpu", check_hash=True
             # url="https://dl.fbaipublicfiles.com/detr/detr-r50-e632da11.pth", map_location="cpu", check_hash=True
             # url="https://github.com/lyuwenyu/storage/releases/download/v0.1/rtdetr_r18vd_dec3_6x_coco_from_paddle.pth", map_location="cpu", check_hash=True
         )
@@ -213,18 +214,18 @@ if __name__ == "__main__":
     elif (model_name == "detr_custom"):
         detr = detr_custom(pretrained=True, num_classes=1, return_postprocessor=False).eval()
 
-    # url = 'http://images.cocodataset.org/train2017/000000000536.jpg'
-    # im = Image.open(requests.get(url, stream=True).raw)
+    url = 'http://images.cocodataset.org/train2017/000000000536.jpg'
+    im = Image.open(requests.get(url, stream=True).raw)
 
-    # print("Image:", im.size)
+    print("Image:", im.size)
 
-    # start = time.time()
-    # scores, boxes = detect(im, detr, transform)
-    # stop = time.time()
+    start = time.time()
+    scores, boxes = detect(im, detr, transform)
+    stop = time.time()
 
-    # print(f"Time: {stop - start}s")
-    # plot_results(im, scores, boxes)
-    detect_set(detr, transform, path_name)
+    print(f"Time: {stop - start}s")
+    plot_results(im, scores, boxes)
+    # detect_set(detr, transform, path_name)
     # print("Detected:", detected)
 
     # detect_img("http://images.cocodataset.org/val2017/000000002299.jpg", detr, transform)
