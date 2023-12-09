@@ -227,7 +227,7 @@ if dest_root_path[-1] != "/":
 if (type == "Detection"):
     img_path_set = glob.glob(source_img_path + "*.png") + glob.glob(source_img_path + "*.jpg")
     img_path_set.sort()
-    num_train_img = 3500
+    num_train_img = 4000
     num_val_img = len(img_path_set) - num_train_img
     write_img_list("img_list.txt", img_path_set, len(img_path_set), num_train_img)
     export_detection(source_img_path, source_label_path, dest_root_path)
